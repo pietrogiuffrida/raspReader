@@ -17,7 +17,8 @@ def sendmail(senderConfig, toaddr, text, sbj, allegati=[]):
   try:
     logging.debug('Invio email {0}'.format(sbj))
     msg = MIMEMultipart()
-    msg['Subject'] = '{0} {1}'.format(sbj, datetime.today().strftime('%Y-%m-%d %H:%M'))
+    msg['Subject'] = '{0} -> {1}'.format(sbj, datetime.today().strftime('%Y-%m-%d %H:%M'))
+#    msg['Subject'] = sbj
     msg['From'] = senderConfig["fromaddr"]
 
     text = text + '\n' + datetime.today().strftime('%Y-%m-%d %H:%M')
@@ -72,12 +73,17 @@ def mongoConnect(mongo_config):
 
 
 
-def mongoUpdate(pin, status, private):
+def mongoUpdate(pin, channel, private):
 
   mongoStatus, collection, connection = mongoConnect(private.mongo_config)
 
   if mongoStatus == 0:
-    collection.insert({'GPIO': pin, 'STATUS': status})
+    collection.insert({'gpio': pin,
+                       'status': channel["status_explicit"],
+                       'timestamp': channel['timestamp'],
+                       'channel': channel['channel'],
+                       'name': channel['name'],
+                     })
     connection.close()
 
   else:
