@@ -56,7 +56,7 @@ while True:
 
 
       # invia email, se previsto
-      if config.messages[channel][status]['send'] != True:
+      if config.messages[channel][status]['send'] == True:
         senderConfig(private.recipients,
                     config.messages[channel][status]['message'],
                     config.messages[channel][status]['message']
