@@ -64,7 +64,7 @@ def mongoConnect(mongo_config):
 
 def mongoUpdate(pin, status, private, config):
 
-  mongoStatus, collection, connection = lib.mongoConnect(private.mongo_config)
+  mongoStatus, collection, connection = mongoConnect(private.mongo_config)
 
   if mongoStatus == 0:
     collection.insert({'GPIO': pin, 'STATUS': status})
