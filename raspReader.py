@@ -7,7 +7,7 @@ from pymongo import MongoClient
 import logging
 
 from lib import *
-import config
+from config import *
 import private
 
 
@@ -24,7 +24,9 @@ gpio.setmode(gpio.BOARD)
 mode = gpio.IN
 resistenza = gpio.PUD_UP
 
-for channel in config.channels:
+
+for pin in channels:
+  channel = channels[pin]
   try:
     logging.debug('loading {0}'.format(channel))
     gpio.setup(channel['pin'], mode, resistenza)
@@ -33,23 +35,28 @@ for channel in config.channels:
     logging.exception('')
 
 
+
 while True:
 
-  for channel in config.channels:
+  for pin in channels:
 
-    status = gpio.input(channel['pin'])
-    status_explicit = config.stati[gpio.input(channel['pin'])]
-    pin = channel['pin']
+    channel = channels[pin]
+    status = gpio.input(pin)
+
+    # posso commutare lo status_explicit fin d'ora, ma non lo status, che è semanticamente rilevante!
+    channel["status_explicit"] = stati[status]
+
 
     if status != channel['status']:
 
 
       # log sicuro
-      logging.info('GPIO {0}, CHANNEL {1}, NAME {2}, STATUS: {3}'.format(pin, channel['channel'], channel['name'], status_explicit))
+      logmsg = 'GPIO {0}, CHANNEL {1}, NAME {2}, STATUS {3}'
+      logging.info(logmsg.format(pin, channel['channel'], channel['name'], channel['status_explicit']))
 
 
       # aggiorna mongolog
-      mongoUpdate(pin, status_explicit, private, config)
+      mongoUpdate(pin, status_explicit, private)
 
 
       # aggiorna log remoto
@@ -57,18 +64,19 @@ while True:
 
 
       # invia email, se previsto
-      if config.messages[pin][status]['send'] == True:
+      if channel['events'][status]['send'] == True:
+
         sendmail(private.senderConfig, private.recipients,
-                 config.messages[pin][status]['message'],
-                 config.messages[pin][status]['message']
+                 channel['events'][status]['message'],
+                 channel['events'][status]['message']
                 )
 
 
-      # commuta stato storico
+      # commuto solo ora status storico
       channel['status'] = status
 
 
-  sleep(config.delay)
+  sleep(delay)
 
 
 gpio.cleanup()
