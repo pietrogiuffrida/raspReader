@@ -47,30 +47,31 @@ while True:
 
   for pin in channels:
 
+    # fisso il quando
+    now = datetime.now()
+
     # leggo lo status
     status = gpio.input(pin)
 
     # leggo la configurazione del channel 
     channel = channels[pin]
 
-    # ----> posso commutare lo status_explicit fin d'ora, ma non lo status, che è semanticamente rilevante!
-    channel["status_explicit"] = stati[status]
-
     # reagisco ad eventuali cambiamenti di stato
     if status != channel['status']:
 
-      # 1. log sicuro
-      logmsg = 'GPIO {0}, CHANNEL {1}, NAME {2}, STATUS {3}'
-      logging.info(logmsg.format(pin, channel['channel'], channel['name'], channel['status_explicit']))
+      # ----> commuto lo status e fisso il now
+      channel["status_explicit"] = stati[status]
+      channel['status'] = status
+      channel['timestamp'] = now
 
+      # 1. log sicuro
+      logmsg = 'GPIO {0}, CHANNEL {1}, NAME {2}, STATUS {3}, {4}'
+      logging.info(logmsg.format(pin, channel['channel'], channel['name'], channel['status_explicit'], channel['timestamp']))
 
       # 2. aggiorna mongolog
-      mongoUpdate(pin, channel["status_explicit"], private)
-
+      mongoUpdate(pin, channel, private)
 
       # 3. aggiorna log remoto
-      # non lo so, da vedere se chiamare una qualche interfaccia
-
 
       # 4. invia email, se previsto
       if channel['events'][status]['send'] == True:
@@ -78,10 +79,6 @@ while True:
                  channel['events'][status]['message'],
                  channel['events'][status]['message']
                 )
-
-
-      # ----> commuto solo ora status storico <----
-      channel['status'] = status
 
 
   sleep(delay)
