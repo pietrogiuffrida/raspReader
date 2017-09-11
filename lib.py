@@ -20,6 +20,7 @@ def sendmail(senderConfig, toaddr, text, sbj, allegati=[]):
     msg['Subject'] = '{0} {1}'.format(sbj, datetime.today().strftime('%Y-%m-%d %H:%M'))
     msg['From'] = senderConfig["fromaddr"]
 
+    text = text + '\n' + datetime.today().strftime('%Y-%m-%d %H:%M')
     testo = MIMEText(text, 'html', 'utf-8')
     msg.attach(testo)
 
