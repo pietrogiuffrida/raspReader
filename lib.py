@@ -51,7 +51,7 @@ def sendmail(senderConfig, toaddr, text, sbj, allegati=[]):
 
   except:
     logging.error("IMPOSSIBILE INVIARE L'EMAIL!")
-    logging.exception('')
+#    logging.exception('')
 
 
 
@@ -68,7 +68,7 @@ def mongoConnect(mongo_config):
 
   except:
     logging.error('IMPOSSIBILE CONNETTERSI A MONGODB')
-    logging.exception('')
+#    logging.exception('')
     return 1, None, None
 
 

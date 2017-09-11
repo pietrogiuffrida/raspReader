@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import os
 import RPi.GPIO as gpio
 from time import sleep
 from pymongo import MongoClient
@@ -37,6 +38,11 @@ for pin in channels:
   except:
     logging.error('ERROR LOADING {0}, MODE {1}'.format(channel, mode))
     logging.exception('')
+    sleep(2)
+    sendmail(private.senderConfig, private.error_recipients,
+             'IMPOSSIBILE CONFIGURARE GPIO FIUME',
+             'IMPOSSIBILE CONFIGURARE GPIO FIUME', 'log/reader.log')
+    os._exit(1)
 
 
 # * ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * **
