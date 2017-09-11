@@ -2,14 +2,16 @@
 
 logfilename = "reader.log"
 
+stati = {0: 'ON', 1: 'OFF'}
+
 channels = [
-  {"name": "channel_a", "pin": 37, "status": 1},
-  {"name": "channel_b", "pin": 35, "status": 1},
-  {"name": "channel_c", "pin": 33, "status": 1},
-  {"name": "channel_d", "pin": 31, "status": 1},
-  {"name": "channel_e", "pin": 29, "status": 1},
-  {"name": "channel_f", "pin": 23, "status": 1},
-  {"name": "channel_g", "pin": 21, "status": 1},
+  {"channel": "A", "pin": 37, "status": 1, 'name': 'pompa 1'},
+  {"channel": "B", "pin": 35, "status": 1, 'name': 'pompa 2'},
+  {"channel": "C", "pin": 33, "status": 1, 'name': 'pompa 3'},
+  {"channel": "D", "pin": 31, "status": 1, 'name': 'livello 1'},
+  {"channel": "E", "pin": 29, "status": 1, 'name': 'livello 2'},
+  {"channel": "F", "pin": 23, "status": 1, 'name': 'livello 3'},
+  {"channel": "G", "pin": 21, "status": 1, 'name': 'livello 4'},
 ]
 
 delay = 2
