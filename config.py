@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-logfilename = "reader.log"
+logfilename = "log/reader.log"
 
 stati = {0: 'ON', 1: 'OFF'}
 
