@@ -11,6 +11,7 @@ from email.mime.multipart import MIMEMultipart
 from datetime import datetime
 
 
+
 def sendmail(senderConfig, toaddr, text, sbj, allegati=[]):
 
   try:
@@ -18,7 +19,6 @@ def sendmail(senderConfig, toaddr, text, sbj, allegati=[]):
     msg = MIMEMultipart()
     msg['Subject'] = '{0} {1}'.format(sbj, datetime.today().strftime('%Y-%m-%d %H:%M'))
     msg['From'] = senderConfig["fromaddr"]
-    msg['To'] = to
 
     testo = MIMEText(text, 'html', 'utf-8')
     msg.attach(testo)
@@ -35,7 +35,16 @@ def sendmail(senderConfig, toaddr, text, sbj, allegati=[]):
     s = smtplib.SMTP(senderConfig["smtp"])
     s.starttls()
     s.login(senderConfig['fromaddr'], senderConfig['password'])
-    s.sendmail(senderConfig['fromaddr'], to, msg.as_string())
+
+    if type(toaddr) == str:
+      msg['To'] = toaddr
+      s.sendmail(senderConfig['fromaddr'], toaddr, msg.as_string())
+
+    elif type(toaddr) == list:
+      for addr in toaddr:
+        msg['To'] = addr
+        s.sendmail(senderConfig['fromaddr'], addr, msg.as_string())
+
     s.quit()
 
   except:
@@ -71,6 +80,5 @@ def mongoUpdate(pin, status, private, config):
     connection.close()
 
   else:
-    sendmail(private.error_recipient,
-              config.mongo_error_message,
-              config.mongo_error_sbj)
+    sendmail(private.senderConfig, private.error_recipient,
+             config.mongo_error_message, config.mongo_error_sbj)
