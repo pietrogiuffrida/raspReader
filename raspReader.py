@@ -7,7 +7,7 @@ from pymongo import MongoClient
 import logging
 from functools import partial
 
-import lib
+from lib import *
 import config
 import private
 
@@ -25,7 +25,7 @@ gpio.setmode(gpio.BOARD)
 mode = gpio.IN
 resistenza = gpio.PUD_UP
 
-for channel in channels:
+for channel in config.channels:
   try:
     logging.debug('loading {0}'.format(channel))
     gpio.setup(channel['pin'], mode, resistenza)
@@ -36,7 +36,7 @@ for channel in channels:
 
 while True:
 
-  for channel in channels:
+  for channel in config.channels:
 
     status = gpio.input(channel['pin'])
 
@@ -67,7 +67,7 @@ while True:
       channel['status'] = status
 
 
-  sleep(delay)
+  sleep(config.delay)
 
 
 gpio.cleanup()
