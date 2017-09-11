@@ -71,7 +71,7 @@ def mongoConnect(mongo_config):
 
 
 
-def mongoUpdate(pin, status, private, config):
+def mongoUpdate(pin, status, private):
 
   mongoStatus, collection, connection = mongoConnect(private.mongo_config)
 
@@ -81,4 +81,4 @@ def mongoUpdate(pin, status, private, config):
 
   else:
     sendmail(private.senderConfig, private.error_recipient,
-             config.mongo_error_message, config.mongo_error_sbj)
+             "IMPOSSIBILE CONNETTERSI A MONGODB", "IMPOSSIBILE CONNETTERSI A MONGODB")
