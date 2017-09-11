@@ -52,7 +52,7 @@ while True:
 
 
       # aggiorna log remoto
-      # non lo so
+      # non lo so, da vedere se chiamare una qualche interfaccia
 
 
       # invia email, se previsto
