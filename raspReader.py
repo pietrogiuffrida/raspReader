@@ -5,7 +5,6 @@ import RPi.GPIO as gpio
 from time import sleep
 from pymongo import MongoClient
 import logging
-from functools import partial
 
 from lib import *
 import config
@@ -14,12 +13,12 @@ import private
 
 logging.basicConfig(
   format='%(asctime)s\t%(levelname)s\t%(message)s',
-  #filename=logfilename,
-#  level=logging.INFO
-  level=logging.DEBUG
+  filename=config.logfilename,
+  level=logging.INFO
+#  level=logging.DEBUG
   )
 
-sendmail = partial(sendmail, private.senderConfig)
+logging.info('*'*20 + ' NUOVA ESECUZIONE ' + '*'*20)
 
 gpio.setmode(gpio.BOARD)
 mode = gpio.IN
@@ -39,16 +38,18 @@ while True:
   for channel in config.channels:
 
     status = gpio.input(channel['pin'])
+    status_explicit = config.stati[gpio.input(channel['pin'])]
+    pin = channel['pin']
 
     if status != channel['status']:
 
 
       # log sicuro
-      logging.info('GPIO {0}, STATUS: {1}'.format(channel['pin'], status))
+      logging.info('GPIO {0}, CHANNEL {1}, NAME {2}, STATUS: {3}'.format(pin, channel['channel'], channel['name'], status_explicit))
 
 
       # aggiorna mongolog
-      mongoUpdate(channel['pin'], status, private, config)
+      mongoUpdate(pin, status_explicit, private, config)
 
 
       # aggiorna log remoto
@@ -56,11 +57,11 @@ while True:
 
 
       # invia email, se previsto
-      if config.messages[channel][status]['send'] == True:
-        senderConfig(private.recipients,
-                    config.messages[channel][status]['message'],
-                    config.messages[channel][status]['message']
-                    )
+      if config.messages[pin][status]['send'] == True:
+        sendmail(private.senderConfig, private.recipients,
+                 config.messages[pin][status]['message'],
+                 config.messages[pin][status]['message']
+                )
 
 
       # commuta stato storico
@@ -71,3 +72,5 @@ while True:
 
 
 gpio.cleanup()
+
+logging.info('*'*20 + ' ESCO NORMALMENTE ' + '*'*20)
