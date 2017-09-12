@@ -40,8 +40,8 @@ for pin in channels:
     logging.exception('')
     sleep(2)
     sendmail(private.senderConfig, private.error_recipients,
-             'IMPOSSIBILE CONFIGURARE GPIO FIUME',
-             'IMPOSSIBILE CONFIGURARE GPIO FIUME', 'log/reader.log')
+             'IMPOSSIBILE CONFIGURARE GPIO {}'.format(pin),
+             'IMPOSSIBILE CONFIGURARE GPIO {}'.format(pin), 'log/reader.log')
     os._exit(1)
 
 
