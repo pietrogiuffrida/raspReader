@@ -12,7 +12,7 @@ from datetime import datetime
 
 
 
-def sendmail(senderConfig, toaddr, text, sbj, allegati=[]):
+def sendmail(senderConfig, toaddr, text, sbj, allegati=None):
 
   try:
     logging.debug('Invio email {0}'.format(sbj))
@@ -25,13 +25,17 @@ def sendmail(senderConfig, toaddr, text, sbj, allegati=[]):
     testo = MIMEText(text, 'html', 'utf-8')
     msg.attach(testo)
 
-    if allegati != []:
+    if allegati != None:
+
+      if type(allegati) == str:
+        allegati = [allegati]
+
       for filename in allegati:
         attachment = open(filename, "rb")
         part = MIMEBase('application', 'octet-stream')
         part.set_payload((attachment).read())
         encoders.encode_base64(part)
-        part.add_header('Content-Disposition', "attachment; filename= %s" % filename)
+        part.add_header('Content-Disposition', "attachment; filename= %s" % filename.split('/')[-1])
         msg.attach(part)
 
     s = smtplib.SMTP(senderConfig["smtp"])
@@ -39,19 +43,17 @@ def sendmail(senderConfig, toaddr, text, sbj, allegati=[]):
     s.login(senderConfig['fromaddr'], senderConfig['password'])
 
     if type(toaddr) == str:
-      msg['To'] = toaddr
-      s.sendmail(senderConfig['fromaddr'], toaddr, msg.as_string())
+      toaddr = [toaddr]
 
-    elif type(toaddr) == list:
-      for addr in toaddr:
-        msg['To'] = addr
-        s.sendmail(senderConfig['fromaddr'], addr, msg.as_string())
+    for addr in toaddr:
+      msg['To'] = addr
+      s.sendmail(senderConfig['fromaddr'], addr, msg.as_string())
 
     s.quit()
 
   except:
     logging.error("IMPOSSIBILE INVIARE L'EMAIL!")
-#    logging.exception('')
+    logging.exception('')
 
 
 
