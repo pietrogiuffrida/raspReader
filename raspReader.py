@@ -7,6 +7,8 @@ from time import sleep
 from pymongo import MongoClient
 import logging
 
+from locallib.pypid.pid import *
+
 from lib import *
 from config import *
 import private
@@ -20,6 +22,24 @@ logging.basicConfig(
   )
 
 logging.info('*'*20 + ' NUOVA ESECUZIONE ' + '*'*20)
+
+
+# * ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * **
+# PID LOCK
+# * ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * **
+
+pid_status = checkpid(pidfile)
+if pid_status != 0:
+  logging.error('ESCO IMMEDIATAMENTE --> PID')
+
+  sleep(2)
+  sendmail(private.senderConfig, private.error_recipients,
+           'TENTATO NUOVO RUN, PID CONFLICT'.format(pin),
+           'TENTATO NUOVO RUN, PID CONFLICT'.format(pin), 'log/reader.log')
+
+  os._exit(1)
+
+writeLockfile(pidfile)
 
 
 # * ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * **
@@ -38,10 +58,13 @@ for pin in channels:
   except:
     logging.error('ERROR LOADING {0}, MODE {1}'.format(channel, mode))
     logging.exception('')
+
     sleep(2)
     sendmail(private.senderConfig, private.error_recipients,
              'IMPOSSIBILE CONFIGURARE GPIO {}'.format(pin),
              'IMPOSSIBILE CONFIGURARE GPIO {}'.format(pin), 'log/reader.log')
+
+    deleteLockfile(pidfile)
     os._exit(1)
 
 
