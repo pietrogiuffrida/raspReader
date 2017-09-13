@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+pidfile = '.rR.pid'
 logfilename = "log/reader.log"
 
 stati = {0: 'ON', 1: 'OFF'}
