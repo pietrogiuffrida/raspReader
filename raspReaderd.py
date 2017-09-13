@@ -8,8 +8,10 @@ import RPi.GPIO as gpio
 from time import sleep
 from pymongo import MongoClient
 import logging
+import threading
 
 from pypid.pid import *
+from jdserializer.jdserializer import jdserializer
 
 from lib import *
 from config import *
@@ -17,14 +19,16 @@ import private
 
 
 logging.basicConfig(
-  format='%(asctime)s\t%(levelname)s\t%(message)s',
+  format='%(asctime)s\t%(levelname)s\t%(pathname)s\t%(message)s',
   filename=logfilename,
   level=logging.INFO
 #  level=logging.DEBUG
   )
+logging.getLogger("flask").setLevel(logging.WARNING)
+logging.getLogger("werkzeug").setLevel(logging.WARNING)
 
 
-def pinStatus(channels, delay):
+def continuosly(channels, delay):
 
   for pin in channels:
 
@@ -65,10 +69,29 @@ def pinStatus(channels, delay):
 
 
 app = Flask(__name__)
+app.logger.setLevel(logging.ERROR)
 
-@app.route('/hello', methods=['GET'])
-def hello_world():
-  return 'hello world!'
+@app.route('/check', methods=['GET'])
+def one_shot():
+  try:
+    logging.info('one shot')
+    return json.dumps(channels, default=jdserializer)
+  except:
+    logging.error('check error')
+    logging.exception('')
+    return 'Nope!'
+
+
+@app.before_first_request
+def timpano():
+
+  def run_job():
+    while True:
+      continuosly(channels, delay)
+
+  logging.info('STARTING CONTINUOS CHEK')
+  thread = threading.Thread(target=run_job)
+  thread.start()
 
 
 if __name__ == '__main__':
@@ -125,19 +148,20 @@ if __name__ == '__main__':
 
 
   # * ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * **
-  # LETTURA DELLO STATUS E REAZIONI VARIE
-  # * ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * **
-
-  pinStatus(channels, delay)
-
-
-  # * ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * **
   # Running Flask
   # * ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * **
 
   host = "0.0.0.0"
-  port = "5000"
-  app.run(host=host, port=port, debug=True)
+  port = 5000
+  app.run(host=host, port=port, debug=False)
+
+
+  # * ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * **
+  # LETTURA DELLO STATUS E REAZIONI VARIE
+  # * ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * **
+
+#  while True:
+#    pinStatus(channels, delay)
 
 
 gpio.cleanup()
