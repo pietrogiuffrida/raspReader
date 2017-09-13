@@ -85,7 +85,7 @@ while True:
     # leggo lo status
     status = gpio.input(pin)
 
-    # leggo la configurazione del channel 
+    # leggo la configurazione del channel
     channel = channels[pin]
 
     # reagisco ad eventuali cambiamenti di stato
