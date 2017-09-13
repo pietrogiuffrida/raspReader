@@ -7,7 +7,7 @@ from time import sleep
 from pymongo import MongoClient
 import logging
 
-from locallib.pypid.pid import *
+from pypid.pid import *
 
 from lib import *
 from config import *
@@ -29,15 +29,18 @@ logging.info('*'*20 + ' NUOVA ESECUZIONE ' + '*'*20)
 # * ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * *** ** * ** ** * **
 
 pid_status = checkpid(pidfile)
-if pid_status != 0:
+if pid_status == 3:
   logging.error('ESCO IMMEDIATAMENTE --> PID')
 
   sleep(2)
   sendmail(private.senderConfig, private.error_recipients,
-           'TENTATO NUOVO RUN, PID CONFLICT'.format(pin),
-           'TENTATO NUOVO RUN, PID CONFLICT'.format(pin), 'log/reader.log')
+           'TENTATO NUOVO RUN, PID CONFLICT',
+           'TENTATO NUOVO RUN, PID CONFLICT', 'log/reader.log')
 
   os._exit(1)
+
+elif pid_status in [1, 3]:
+  logging.info('IL PROCESSO RISULTA CESSATO, SOVRASCRIVO IL PID')
 
 writeLockfile(pidfile)
 
