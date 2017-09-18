@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from datetime import datetime
 from flask import Flask, request
 import json
 import os
@@ -71,13 +72,36 @@ def continuosly(channels, delay):
 app = Flask(__name__)
 #app.logger.setLevel(logging.ERROR)
 
+
+@app.route('/mail', methods=['GET'])
+def mail():
+  try:
+    logging.info('mail')
+
+    msg = ''
+    for pin in channels:
+      channel = channels[pin]
+      if channel.get('timestamp'):
+        dt = channel["timestamp"].strftime('%Y/%m/%d %H:%M:%S')
+      else:
+        dt = '00'
+      msg += ' '.join(['<p>', channel['name'], channel.get('status_explicit', 'OFF'), 'dal', dt, '</p>'])
+    
+    sendmail(private.senderConfig, private.recipients, msg, 'Sintesi')
+    return 'Send'
+  except:
+    logging.error('check mail error')
+    logging.exception('')
+    return 'Nope!'
+
+
 @app.route('/check', methods=['GET'])
 def one_shot():
   try:
     logging.info('one shot')
     return json.dumps(channels, default=jdserializer)
   except:
-    logging.error('check error')
+    logging.error('check one shot error')
     logging.exception('')
     return 'Nope!'
 
