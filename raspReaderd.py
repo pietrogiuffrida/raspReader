@@ -17,9 +17,9 @@ from lib import *
 from config import *
 import private
 
-
 logging.basicConfig(
-  format='%(asctime)s\t%(levelname)s\t%(pathname)s\t%(message)s',
+#  format='%(asctime)s\t%(levelname)s\t%(pathname)s\t%(message)s',
+  format='%(asctime)s\t%(levelname)s\t%(message)s',
   filename=logfilename,
   level=logging.INFO
 #  level=logging.DEBUG
@@ -69,7 +69,7 @@ def continuosly(channels, delay):
 
 
 app = Flask(__name__)
-app.logger.setLevel(logging.ERROR)
+#app.logger.setLevel(logging.ERROR)
 
 @app.route('/check', methods=['GET'])
 def one_shot():
