@@ -1,0 +1,16 @@
+[Unit]
+Description=raspReader
+After=network.target
+
+[Service]
+Type=idle
+User=pietro
+Environment=PYTHONPATH=/home/pietro/locallib/
+ExecStart=/usr/bin/python3 /home/pietro/raspReader/raspReaderd.py
+ExecStartPost=/home/pietro/bin/activaterr.sh
+RestartSec=3
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+
