@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-pidfile = '.rR.pid'
-logfilename = "log/reader.log"
+root = "/home/pietro/raspReader/"
+pidfile = root + '.rR.pid'
+logfilename = root + "log/reader.log"
 
 stati = {0: 'ON', 1: 'OFF'}
 
