@@ -123,9 +123,8 @@ def timpano():
     while True:
       continuosly(channels, delay)
 
-  continuo = threading.Thread(target=run_job, name="continuo")
-  continuo.setDaemon(True)
-  continuo.start()
+  thread = threading.Thread(target=run_job)
+  thread.start()
 
 
 if __name__ == '__main__':
