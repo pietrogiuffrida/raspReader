@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from jinja2 import Environment, FileSystemLoader, select_autoescape
+from datetime import datetime
 from flask import Flask, request
 import json
 import os
@@ -17,9 +19,16 @@ from lib import *
 from config import *
 import private
 
+env = Environment(
+    loader=FileSystemLoader(root + 'jtemplate'),
+    autoescape=select_autoescape(['html', 'xml'])
+)
+template = env.get_template('jtemplate.txt')
+
 
 logging.basicConfig(
-  format='%(asctime)s\t%(levelname)s\t%(pathname)s\t%(message)s',
+#  format='%(asctime)s\t%(levelname)s\t%(pathname)s\t%(message)s',
+  format='%(asctime)s\t%(levelname)s\t%(message)s',
   filename=logfilename,
   level=logging.INFO
 #  level=logging.DEBUG
@@ -69,15 +78,39 @@ def continuosly(channels, delay):
 
 
 app = Flask(__name__)
-app.logger.setLevel(logging.ERROR)
+#app.logger.setLevel(logging.ERROR)
+
+
+@app.route('/mail', methods=['GET'])
+def mail():
+  try:
+    logging.info('mail')
+
+    msg = ''
+    for pin in channels:
+      channel = channels[pin]
+      if channel.get('timestamp'):
+        dt = channel["timestamp"].strftime('%Y/%m/%d %H:%M:%S')
+      else:
+        dt = '00'
+      msg += ' '.join(['<p>', channel['name'], channel.get('status_explicit', 'OFF'), 'dal', dt, '</p>'])
+    
+    sendmail(private.senderConfig, private.recipients, msg, 'Sintesi')
+    return 'Send'
+  except:
+    logging.error('check mail error')
+    logging.exception('')
+    return 'Nope!'
+
 
 @app.route('/check', methods=['GET'])
 def one_shot():
   try:
     logging.info('one shot')
-    return json.dumps(channels, default=jdserializer)
+#    return json.dumps(channels, default=jdserializer)
+    return template.render(out=channels)
   except:
-    logging.error('check error')
+    logging.error('check one shot error')
     logging.exception('')
     return 'Nope!'
 

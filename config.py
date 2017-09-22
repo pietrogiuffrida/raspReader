@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-pidfile = '.rR.pid'
-logfilename = "log/reader.log"
+root = "/home/pietro/raspReader/"
+pidfile = root + '.rR.pid'
+logfilename = root + "log/reader.log"
 
 stati = {0: 'ON', 1: 'OFF'}
 
@@ -96,7 +97,7 @@ channels = {
     'events': {
       0: {
         'send': True,
-        'message': '--> RAGGIUNTO LIVELLO FIUME 3 <---',
+        'message': 'RAGGIUNTO LIVELLO FIUME 3',
       },
       1: {
         'send': True,
@@ -112,7 +113,7 @@ channels = {
     'events': {
       0: {
         'send': True,
-        'message': '---> RAGGIUNTO LIVELLO FIUME 4 <---',
+        'message': 'RAGGIUNTO LIVELLO FIUME 4',
       },
       1: {
         'send': True,
