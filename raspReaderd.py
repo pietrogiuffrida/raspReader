@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from jinja2 import Environment, FileSystemLoader, select_autoescape
 from datetime import datetime
 from flask import Flask, request
 import json
@@ -17,6 +18,13 @@ from jdserializer.jdserializer import jdserializer
 from lib import *
 from config import *
 import private
+
+env = Environment(
+    loader=FileSystemLoader(root + 'jtemplate'),
+    autoescape=select_autoescape(['html', 'xml'])
+)
+template = env.get_template('jtemplate.txt')
+
 
 logging.basicConfig(
 #  format='%(asctime)s\t%(levelname)s\t%(pathname)s\t%(message)s',
@@ -99,7 +107,8 @@ def mail():
 def one_shot():
   try:
     logging.info('one shot')
-    return json.dumps(channels, default=jdserializer)
+#    return json.dumps(channels, default=jdserializer)
+    return template.render(out=channels)
   except:
     logging.error('check one shot error')
     logging.exception('')

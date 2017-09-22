@@ -1,0 +1,34 @@
+<html>
+
+<head>
+<style>
+table {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+}
+
+
+th {
+    border-bottom: 1px solid black;
+}
+
+
+</style>
+</head>
+
+<table>
+  <tr>
+    <th>Evento</th>
+    <th>Stato</th>
+    <th>Data</th>
+  </tr>
+  {% for pid in out %}
+    <tr>
+      <td>{{ out[pid]['name'] }}</td>
+      <td>{{ out[pid]['events'][out[pid]['status']]['message'] }}</td>
+      <td>{{ out[pid]['timestamp'] }}</td>
+    </tr>
+  {% endfor %}
+<table>
+
+</html>

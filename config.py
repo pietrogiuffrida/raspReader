@@ -97,7 +97,7 @@ channels = {
     'events': {
       0: {
         'send': True,
-        'message': '--> RAGGIUNTO LIVELLO FIUME 3 <---',
+        'message': 'RAGGIUNTO LIVELLO FIUME 3',
       },
       1: {
         'send': True,
@@ -113,7 +113,7 @@ channels = {
     'events': {
       0: {
         'send': True,
-        'message': '---> RAGGIUNTO LIVELLO FIUME 4 <---',
+        'message': 'RAGGIUNTO LIVELLO FIUME 4',
       },
       1: {
         'send': True,
