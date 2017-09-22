@@ -84,14 +84,15 @@ def one_shot():
 
 @app.before_first_request
 def timpano():
+  logging.info('STARTING CONTINUOS CHEK')
 
   def run_job():
     while True:
       continuosly(channels, delay)
 
-  logging.info('STARTING CONTINUOS CHEK')
-  thread = threading.Thread(target=run_job)
-  thread.start()
+  continuo = threading.Thread(target=run_job, name="continuo")
+  continuo.setDaemon(True)
+  continuo.start()
 
 
 if __name__ == '__main__':
