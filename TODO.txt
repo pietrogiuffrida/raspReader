@@ -1,0 +1,3 @@
+1. mail di riepilogo periodica a step diversi a seconda del livello raggiunto
+2. pulsante di spegnimento
+3. 
