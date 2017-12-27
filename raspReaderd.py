@@ -94,6 +94,10 @@ def mail():
       else:
         dt = '00'
       msg += ' '.join(['<p>', channel['name'], channel.get('status_explicit', 'OFF'), 'dal', dt, '</p>'])
+
+    others = recentUpdates(private)
+    msg += '<br>'
+    msg += others
     
     sendmail(private.senderConfig, private.recipients, msg, 'Sintesi')
     return 'Send'
