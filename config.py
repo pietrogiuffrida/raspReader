@@ -13,15 +13,15 @@ channels = {
   37: {
     "channel": "A",
     "status": 1,
-    'name': 'pompa 1',
+    'name': 'pompa A',
     'events': {
       0: {
         'send': True,
-        'message': 'POMPA 1 ON',
+        'message': 'POMPA A ON',
       },
       1: {
         'send': True,
-        'message': 'pompa 1 off',
+        'message': 'pompa A off',
       }
     }
   },
@@ -29,15 +29,15 @@ channels = {
   35: {
     "channel": "B",
     "status": 1,
-    'name': 'pompa 2',
+    'name': 'livello 1',
     'events': {
       0: {
         'send': True,
-        'message': 'POMPA 2 ON',
+        'message': 'LIVELLO 1 ON',
       },
       1: {
         'send': True,
-        'message': 'pompa 2 off',
+        'message': 'livello 1 off',
       }
     }
   },
@@ -45,37 +45,21 @@ channels = {
   33: {
     "channel": "C",
     "status": 1,
-    'name': 'pompa 3',
+    'name': 'pompa B',
     'events': {
       0: {
         'send': True,
-        'message': 'POMPA 3 ON',
+        'message': 'POMPA B ON',
       },
       1: {
         'send': True,
-        'message': 'pompa 3 off',
+        'message': 'pompa B off',
       }
     }
   },
 
   31: {
     "channel": "D",
-    "status": 1,
-    'name': 'livello 1',
-    'events': {
-      0: {
-        'send': True,
-        'message': 'RAGGIUNTO LIVELLO FIUME 1',
-      },
-      1: {
-        'send': True,
-        'message': 'livello fiume 1 off',
-      }
-    }
-  },
-
-  29: {
-    "channel": "E",
     "status": 1,
     'name': 'livello 2',
     'events': {
@@ -86,6 +70,22 @@ channels = {
       1: {
         'send': True,
         'message': 'livello fiume 2 off',
+      }
+    }
+  },
+
+  29: {
+    "channel": "E",
+    "status": 1,
+    'name': 'pompa C',
+    'events': {
+      0: {
+        'send': True,
+        'message': 'POMPA C ON',
+      },
+      1: {
+        'send': True,
+        'message': 'pompa C off',
       }
     }
   },
