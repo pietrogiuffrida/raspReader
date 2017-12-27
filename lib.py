@@ -8,7 +8,8 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 from email.mime.multipart import MIMEMultipart
-from datetime import datetime
+from datetime import datetime, timedelta
+import pandas as pd
 
 
 
@@ -20,6 +21,7 @@ def sendmail(senderConfig, toaddr, text, sbj, allegati=None):
     msg['Subject'] = '{0} -> {1}'.format(sbj, datetime.today().strftime('%Y-%m-%d %H:%M'))
 #    msg['Subject'] = sbj
     msg['From'] = senderConfig["fromaddr"]
+#    msg['From'] = "Belice"
 
     text = text + '\n' + datetime.today().strftime('%Y-%m-%d %H:%M')
     testo = MIMEText(text, 'html', 'utf-8')
@@ -38,8 +40,8 @@ def sendmail(senderConfig, toaddr, text, sbj, allegati=None):
         part.add_header('Content-Disposition', "attachment; filename= %s" % filename.split('/')[-1])
         msg.attach(part)
 
-    s = smtplib.SMTP(senderConfig["smtp"])
-    s.starttls()
+    s = smtplib.SMTP_SSL(senderConfig["smtp"])
+#    s.starttls()
     s.login(senderConfig['fromaddr'], senderConfig['password'])
 
     if type(toaddr) == str:
@@ -72,6 +74,16 @@ def mongoConnect(mongo_config):
     logging.error('IMPOSSIBILE CONNETTERSI A MONGODB')
 #    logging.exception('')
     return 1, None, None
+
+
+
+def recentUpdates(private):
+  mongoStatus, collection, connection = mongoConnect(private.mongo_config)
+  yesterday = datetime.now() - timedelta(days=1)
+  recent_data = list(collection.find({'timestamp': {"$gt": yesterday}}, {'_id': 0}))
+  connection.close()
+  df = pd.DataFrame(recent_data)
+  return df.to_html()
 
 
 
